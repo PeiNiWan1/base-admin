@@ -98,10 +98,10 @@ const crudSchemas = reactive<CrudSchema[]>([
     },
     table: {
       slots: {
-        default: (data: any) => {
+        default: ({ row }: any) => {
           return (
-            <ElTag type={data.is_active ? 'danger' : 'success'}>
-              {data.is_active ? '禁用' : '启用'}
+            <ElTag type={row.is_active ? 'success' : 'danger'}>
+              {row.is_active ? '启用' : '禁用'}
             </ElTag>
           )
         }
@@ -116,10 +116,46 @@ const crudSchemas = reactive<CrudSchema[]>([
     detail: {
       span: 24,
       slots: {
-        default: (data: any) => {
+        default: (row: any) => {
           return (
-            <ElTag type={data.is_active ? 'success' : 'danger'}>
-              {data.is_active ? '启用' : '禁用'}
+            <ElTag type={row.is_active ? 'success' : 'danger'}>
+              {row.is_active ? '启用' : '禁用'}
+            </ElTag>
+          )
+        }
+      }
+    }
+  },
+  {
+    field: 'is_superuser',
+    label: '管理员权限',
+    search: {
+      hidden: true
+    },
+    table: {
+      slots: {
+        default: ({ row }: any) => {
+          return (
+            <ElTag type={row.is_superuser ? 'success' : 'danger'}>
+              {row.is_superuser ? '启用' : '禁用'}
+            </ElTag>
+          )
+        }
+      }
+    },
+    form: {
+      component: 'Switch',
+      colProps: {
+        span: 12
+      }
+    },
+    detail: {
+      span: 24,
+      slots: {
+        default: (row: any) => {
+          return (
+            <ElTag type={row.is_superuser ? 'success' : 'danger'}>
+              {row.is_superuser ? '启用' : '禁用'}
             </ElTag>
           )
         }
