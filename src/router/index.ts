@@ -100,6 +100,16 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           noCache: true,
           affix: true
         }
+      },
+      {
+        path: 'change-password',
+        component: () => import('@/views/InfoManage/ChangePassword.vue'),
+        name: 'ChangePassword',
+        meta: {
+          title: '修改密码',
+          noCache: true,
+          hidden: true
+        }
       }
     ]
   },
