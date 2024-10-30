@@ -32,3 +32,8 @@ export const getAdminRoleApi = (
 export const getTestRoleApi = (params: RoleParams): Promise<IResponse<string[]>> => {
   return request.get({ url: '/mock/role/list2', params })
 }
+
+// 修改密码
+export const changePassworddApi = (data: any): Promise<IResponse> => {
+  return request.post({ url: '/base/users/changePassword/', data })
+}
