@@ -5,7 +5,7 @@ import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
-import { getTableListApi, saveTableApi, delTableListApi } from '@/api/user'
+import { getTableListApi } from '@/api/searchreport'
 import { useTable } from '@/hooks/web/useTable'
 import { TableData } from '@/api/table/types'
 import { ref, unref, reactive } from 'vue'
@@ -28,10 +28,6 @@ const { tableRegister, tableState, tableMethods } = useTable({
       list: res.data.results,
       total: res.data.count
     }
-  },
-  fetchDelApi: async () => {
-    const res = await delTableListApi(unref(ids))
-    return !!res
   }
 })
 const { loading, dataList, total, currentPage, pageSize } = tableState
@@ -46,21 +42,6 @@ const setSearchParams = (params: any) => {
 const { t } = useI18n()
 
 const crudSchemas = reactive<CrudSchema[]>([
-  // {
-  //   field: 'selection',
-  //   search: {
-  //     hidden: true
-  //   },
-  //   form: {
-  //     hidden: true
-  //   },
-  //   detail: {
-  //     hidden: true
-  //   },
-  //   table: {
-  //     type: 'selection'
-  //   }
-  // },
   {
     field: 'id',
     label: 'ID',
@@ -70,127 +51,62 @@ const crudSchemas = reactive<CrudSchema[]>([
     form: {
       hidden: true
     },
+    table: {
+      width: '80px'
+    },
     detail: {
       hidden: true
     }
   },
   {
-    field: 'phone',
+    field: 'sku',
     label: '账号',
     search: {
-      component: 'Input'
+      hidden: true
     },
     form: {
-      component: 'Input',
-      colProps: {
-        span: 24
-      }
+      hidden: true
     },
     detail: {
       span: 24
     }
   },
   {
-    field: 'is_active',
-    label: '状态',
+    field: 'level_name',
+    label: '等级',
     search: {
+      hidden: true
+    },
+    form: {
       hidden: true
     },
     table: {
-      slots: {
-        default: ({ row }: any) => {
-          return (
-            <ElTag type={row.is_active ? 'success' : 'danger'}>
-              {row.is_active ? '启用' : '禁用'}
-            </ElTag>
-          )
-        }
-      }
-    },
-    form: {
-      component: 'Switch',
-      colProps: {
-        span: 12
-      }
+      width: '80px'
     },
     detail: {
-      span: 24,
-      slots: {
-        default: (row: any) => {
-          return (
-            <ElTag type={row.is_active ? 'success' : 'danger'}>
-              {row.is_active ? '启用' : '禁用'}
-            </ElTag>
-          )
-        }
-      }
+      span: 24
     }
   },
   {
-    field: 'is_superuser',
-    label: '管理员权限',
+    field: 'json_data',
+    label: '源数据',
     search: {
+      hidden: true
+    },
+    form: {
       hidden: true
     },
     table: {
-      slots: {
-        default: ({ row }: any) => {
-          return (
-            <ElTag type={row.is_superuser ? 'success' : 'danger'}>
-              {row.is_superuser ? '启用' : '禁用'}
-            </ElTag>
-          )
-        }
-      }
-    },
-    form: {
-      component: 'Switch',
-      colProps: {
-        span: 12
-      }
+      hidden: true
     },
     detail: {
-      span: 24,
       slots: {
-        default: (row: any) => {
-          return (
-            <ElTag type={row.is_superuser ? 'success' : 'danger'}>
-              {row.is_superuser ? '启用' : '禁用'}
-            </ElTag>
-          )
+        default: (data: any) => {
+          return <div>{JSON.stringify(data)}</div>
         }
       }
     }
   },
-  {
-    field: 'userInfo.api_count_total',
-    label: 'API调用次数',
-    search: {
-      hidden: true
-    },
-    table: {},
-    form: {
-      hidden: true
-    },
-    detail: {
-      span: 24
-    }
-  },
-  {
-    field: 'date_joined',
-    label: t('tableDemo.displayTime'),
-    search: {
-      hidden: true
-    },
-    table: {},
-    form: {
-      hidden: true
-    },
-    detail: {
-      span: 24
-    }
-  },
-
   {
     field: 'action',
     width: '260px',
@@ -209,14 +125,8 @@ const crudSchemas = reactive<CrudSchema[]>([
         default: (data: any) => {
           return (
             <>
-              <BaseButton type="primary" onClick={() => action(data.row, 'edit')}>
-                {t('exampleDemo.edit')}
-              </BaseButton>
               <BaseButton type="success" onClick={() => action(data.row, 'detail')}>
                 {t('exampleDemo.detail')}
-              </BaseButton>
-              <BaseButton type="danger" onClick={() => delData(data.row)}>
-                {t('exampleDemo.del')}
               </BaseButton>
             </>
           )
@@ -263,32 +173,14 @@ const action = (row: TableData, type: string) => {
 const writeRef = ref<ComponentRef<typeof Write>>()
 
 const saveLoading = ref(false)
-
-const save = async () => {
-  const write = unref(writeRef)
-  const formData = await write?.submit()
-  if (formData) {
-    saveLoading.value = true
-    const res = await saveTableApi(formData)
-      .catch(() => {})
-      .finally(() => {
-        saveLoading.value = false
-      })
-    if (res) {
-      dialogVisible.value = false
-      currentPage.value = 1
-      getList()
-    }
-  }
-}
 </script>
 
 <template>
   <ContentWrap>
-    <Search :schema="allSchemas.searchSchema" @search="setSearchParams" @reset="setSearchParams" />
+    <!-- <Search :schema="allSchemas.searchSchema" @search="setSearchParams" @reset="setSearchParams" /> -->
 
     <div class="mb-10px">
-      <BaseButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</BaseButton>
+      <!-- <BaseButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</BaseButton> -->
       <!-- <BaseButton :loading="delLoading" type="danger" @click="delData(null)">
         {{ t('exampleDemo.del') }}
       </BaseButton> -->
@@ -322,14 +214,6 @@ const save = async () => {
     />
 
     <template #footer>
-      <BaseButton
-        v-if="actionType !== 'detail'"
-        type="primary"
-        :loading="saveLoading"
-        @click="save"
-      >
-        {{ t('exampleDemo.save') }}
-      </BaseButton>
       <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
     </template>
   </Dialog>

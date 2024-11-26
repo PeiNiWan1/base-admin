@@ -11,7 +11,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard/analysis',
+    redirect: '/home',
     name: 'Root',
     meta: {
       hidden: true
@@ -83,7 +83,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
   {
     path: '/home',
     component: Layout,
-    redirect: '/home/usermanage',
+    redirect: '/home/searchreport',
     name: 'Home',
     meta: {
       title: t('router.dashboard'),
@@ -97,8 +97,7 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
         name: 'UserManage',
         meta: {
           title: '用户管理',
-          noCache: true,
-          affix: true
+          noCache: true
         }
       },
       {
@@ -109,6 +108,25 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           title: '修改密码',
           noCache: true,
           hidden: true
+        }
+      },
+      {
+        path: 'searchreport',
+        component: () => import('@/views/SearchReport/SearchReport.vue'),
+        name: 'SearchReport',
+        meta: {
+          title: '报告查询',
+          noCache: true,
+          affix: true
+        }
+      },
+      {
+        path: 'searchrecord',
+        component: () => import('@/views/SearchRecord/SearchRecord.vue'),
+        name: 'SearchRecord',
+        meta: {
+          title: '查询记录',
+          noCache: true
         }
       }
     ]

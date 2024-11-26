@@ -59,6 +59,9 @@ const defaultResponseInterceptorsError = (response: any) => {
     const userStore = useUserStoreWithOut()
     userStore.logout()
   }
+  if (response?.status === 403) {
+    ElMessage.error('无权限')
+  }
   return response
 }
 
