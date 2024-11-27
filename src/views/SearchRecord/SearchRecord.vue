@@ -3,7 +3,6 @@ import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElTag } from 'element-plus'
 import { Table } from '@/components/Table'
 import { getTableListApi } from '@/api/searchreport'
 import { useTable } from '@/hooks/web/useTable'
@@ -82,6 +81,38 @@ const crudSchemas = reactive<CrudSchema[]>([
     },
     table: {
       width: '80px'
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'username',
+    label: '账号',
+    search: {
+      hidden: true
+    },
+    form: {
+      hidden: true
+    },
+    table: {
+      width: '100px'
+    },
+    detail: {
+      span: 24
+    }
+  },
+  {
+    field: 'create_time',
+    label: '创建时间',
+    search: {
+      hidden: true
+    },
+    form: {
+      hidden: true
+    },
+    table: {
+      width: '240px'
     },
     detail: {
       span: 24
